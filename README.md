@@ -7,6 +7,7 @@
 - Run main.py
 - All contracts that were sent out as notifications shall appear in the notifications_history.json file
 - These notifications will not be sent out the next time the script is ran
+- Errors will appear in error.log located in the root of the project
 
 ## Automating execution
 - To automate the script to run once per day run script.sh (time can be edited in the shell script)
