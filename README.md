@@ -15,12 +15,20 @@
   - The cronjob above would run the script once every day at 8
 
 ## Project Guide
-- db_handles - contains the SQLiteHandler, which is responsible for interacting with the database
+- db_handles contains the SQLiteHandler, which is responsible for interacting with the database
 - slack_bot contains:
   - message_formatting - static class used for formatting the slack messages
   - notificaton_history_manager - static class used to track contracts that have been sent out through notifications (since the provided DB tables did not have primary keys I used a json file)
   - notification_service - static class that abstracts the sending of a message in slack and takes the client (sender) object as input
   - slack_sender - sender class that allows to create a sender object
-- root directory contains:
+- tests directory contains unit tests
+- project root contains:
     - main.py - responsible for executing the script
     - filters.py - responsible for filtering contracts by type
+
+## Running Unit Tests
+- Navigate to the root directory
+- Run this command: ```python -m unittest discover tests```
+
+## Dependencies
+- Needed pip modules are outlined in requirements.txt
