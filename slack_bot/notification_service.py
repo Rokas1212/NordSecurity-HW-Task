@@ -1,4 +1,5 @@
 from slack_sdk.errors import SlackApiError
+from datetime import datetime
 
 class NotificationService:
     """
@@ -12,10 +13,11 @@ class NotificationService:
             sender: SlackSender object
         """
         try:
-            sender.client.chat_postMessage(
+            response = sender.client.chat_postMessage(
                 channel=sender.channel,
                 text=message
             )
+            return response.get("ok")
         except SlackApiError as e:
-            error_message = e.response.get("error", "Unknown error")
-            print(f"Error sending message: {error_message}")
+            with open('errors.log', 'a') as log_file:
+                log_file.write(f"[{datetime.now().strftime('%d/%m/%Y, %H:%M:%S')}] [Notification Service] Error sending message: {e}\n")

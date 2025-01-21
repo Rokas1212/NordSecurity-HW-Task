@@ -12,7 +12,10 @@ def filter_urgent(rows, columns):
         returns: List of urgent contracts
     """
     expiration_index = list(columns.keys()).index(CONTRACT_EXPIRATION)
-    return [row for row in rows if datetime.strptime(row[expiration_index], '%Y-%m-%d') <= datetime.now() + timedelta(days=3)]
+    today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    return [
+        row for row in rows if today <= datetime.strptime(row[expiration_index], '%Y-%m-%d') <= today + timedelta(days=3)
+    ]
 
 def filter_upcoming(rows, columns):
     """

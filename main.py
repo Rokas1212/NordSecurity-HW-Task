@@ -34,46 +34,50 @@ def initialize_dictionaries(table_schemas, urgent, upcoming, high_cost):
             high_cost[table] = []
 
 def main():
-    # Initialize message
-    message = datetime.now().strftime("%d/%m/%Y") + "\n" +  "-" * 30
+    try:
+        # Initialize message
+        message = datetime.now().strftime("%d/%m/%Y") + "\n" +  "-" * 30
 
-    # Create a SlackSender object
-    sender = SlackSender(BOT_CHANNEL, SLACK_TOKEN)
+        # Create a SlackSender object
+        sender = SlackSender(BOT_CHANNEL, SLACK_TOKEN)
 
-    # Connect to the SQLite database
-    db = SqliteHandler(DATABASE)
+        # Connect to the SQLite database
+        db = SqliteHandler(DATABASE)
 
-    # Read table schemas file
-    with open(TABLE_SCHEMAS_FILE, 'r') as file:
-        table_schemas = json.load(file)
+        # Read table schemas file
+        with open(TABLE_SCHEMAS_FILE, 'r') as file:
+            table_schemas = json.load(file)
 
-    # Initialize dictionaries for each table
-    initialize_dictionaries(table_schemas, URGENT, UPCOMING, HIGH_COST)
+        # Initialize dictionaries for each table
+        initialize_dictionaries(table_schemas, URGENT, UPCOMING, HIGH_COST)
 
-    # Iterate through each table and format contract data into a message
-    for table, columns in table_schemas.items():
-        rows = db.fetch_all_table_rows(table, columns)
-        urgent = filter_urgent(rows, columns)
-        upcoming = filter_upcoming(rows, columns)
-        high_cost = filter_high_cost(rows, columns)
+        # Iterate through each table and format contract data into a message
+        for table, columns in table_schemas.items():
+            rows = db.fetch_all_table_rows(table, columns)
+            urgent = filter_urgent(rows, columns)
+            upcoming = filter_upcoming(rows, columns)
+            high_cost = filter_high_cost(rows, columns)
 
-        # Prepare the message
-        message += MF.prepare_contract_message(URGENT, "URGENT", table, urgent, columns)
-        message += MF.prepare_contract_message(UPCOMING, "UPCOMING", table, upcoming, columns)
-        message += MF.prepare_contract_message(HIGH_COST, "HIGH-COST", table, high_cost, columns)
+            # Prepare the message
+            message += MF.prepare_contract_message(URGENT, "URGENT", table, urgent, columns)
+            message += MF.prepare_contract_message(UPCOMING, "UPCOMING", table, upcoming, columns)
+            message += MF.prepare_contract_message(HIGH_COST, "HIGH-COST", table, high_cost, columns)
 
-        # Store the filtered contracts
-        URGENT[table] = urgent
-        UPCOMING[table] = upcoming
-        HIGH_COST[table] = high_cost
+            # Store the filtered contracts
+            URGENT[table] = urgent
+            UPCOMING[table] = upcoming
+            HIGH_COST[table] = high_cost
 
-    # Send the message to the Slack channel
-    NS.send_message(message, sender)
-    
-    #Save the notification history data
-    NHM.save_data(URGENT, UPCOMING, HIGH_COST, NOTIFICATION_HISTORY_FILE)
+        # Send the message to the Slack channel
+        NS.send_message(message, sender)
+        
+        #Save the notification history data
+        NHM.save_data(URGENT, UPCOMING, HIGH_COST, NOTIFICATION_HISTORY_FILE)
 
-    db.close_connection()
+        db.close_connection()
+    except Exception as e:
+        with open('errors.log', 'a') as log_file:
+            log_file.write(f"[{datetime.now().strftime('%d/%m/%Y, %H:%M:%S')}] [Main] Script ran into an error: {e}\n")
 
 if __name__ == "__main__":
     main()

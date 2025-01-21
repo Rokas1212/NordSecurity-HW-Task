@@ -1,19 +1,21 @@
 
+from datetime import datetime
+
 class MessageFormatting:
     """
         Class to format messages for the Slack bot
     """
 
     @staticmethod
-    def check_duplicates(contract_type, table, contract):
+    def check_duplicates(notification_history, table, contract):
         """
             Check if the team was already notified about the contract to avoid duplicates
-            contract_type: Type of contract
+            notification_history: Dictionary of notification history
             table: Database table name also representing the organization name
             contract: Contract details
             returns: True if the contract exists, False otherwise
         """
-        return list(contract) in contract_type.get(table, [])
+        return list(contract) in notification_history.get(table, [])
 
     @staticmethod
     def format_contract(contract, columns):
@@ -24,6 +26,8 @@ class MessageFormatting:
             returns: Formatted snippet
         """
         try:
+            if not columns:
+                raise Exception("Columns dictionary is empty")
             # Get the index of each column
             software_index = list(columns.keys()).index("software")
             owner_index = list(columns.keys()).index("owner")
@@ -36,7 +40,8 @@ class MessageFormatting:
         * Expiration:    {contract[expiration_index]}
         """
         except Exception as e:
-            print(f"Error formatting contract: {e}")
+            with open('errors.log', 'a') as log_file:
+                log_file.write(f"[{datetime.now().strftime('%d/%m/%Y, %H:%M:%S')}] [MessageFormatting] Error formatting contract: {e}\n")
             return ""
         
     @staticmethod
@@ -50,12 +55,17 @@ class MessageFormatting:
         columns: Dictionary of column mappings
         returns: Formatted message
         """
-        message = f"\n```*{contract_type.upper()} {table.upper()} CONTRACTS*\n"
-        for contract in contracts:
-            if MessageFormatting.check_duplicates(notification_history, table, contract):
-                continue
-            message += MessageFormatting.format_contract(contract, columns)
-        if message[-2] == "*":
-            message += f"No expiring {contract_type.lower()} contracts found"
-        message += "```"
-        return message
+        try:
+            message = f"\n```*{contract_type.upper()} {table.upper()} CONTRACTS*\n"
+            for contract in contracts:
+                if MessageFormatting.check_duplicates(notification_history, table, contract):
+                    continue
+                message += MessageFormatting.format_contract(contract, columns)
+            if message[-2] == "*":
+                message += f"No expiring {contract_type.lower()} contracts found"
+            message += "```"
+            return message
+        except Exception as e:
+            with open('errors.log', 'a') as log_file:
+                log_file.write(f"[{datetime.now().strftime('%d/%m/%Y, %H:%M:%S')}] [MessageFormatting] Error preparing contract message: {e}\n")
+            return f"An error occurred while preparing the data for {table} contracts"

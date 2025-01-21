@@ -1,8 +1,8 @@
 import sqlite3
-import json
+from datetime import datetime
 
 
-class SqliteHandler():
+class SqliteHandler:
     """
     SQLite connection handler class
     """
@@ -47,7 +47,8 @@ class SqliteHandler():
 
             return rows
         except Exception as e:
-            print(f"Error fetching rows from the table: {e}")
+            with open('errors.log', 'a') as log_file:
+                log_file.write(f"[{datetime.now().strftime("%d/%m/%Y, %H:%M:%S")}] [SQLiteHandler] Error fetching rows from the table: {e}\n")
             return []
         
     def close_connection(self):
