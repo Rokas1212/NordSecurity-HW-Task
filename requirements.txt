@@ -1,2 +1,3 @@
-python-dotenv
-slack_sdk
+Required pip modules:
+    - python-dotenv
+    - slack_sdk
