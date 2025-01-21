@@ -1,12 +1,11 @@
 import sqlite3
 import json
 
-"""
-SQLite connection handler class
 
-"""
 class SqliteHandler():
-
+    """
+    SQLite connection handler class
+    """
     _instance = None
 
     def __new__(cls, database):
