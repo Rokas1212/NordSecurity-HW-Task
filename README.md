@@ -14,9 +14,6 @@
   - 0 8 * * * python3 path/to/main.py
   - The cronjob above would run the script once every day at 8
 
-## General Information
-- TBD
-
 ## Project Guide
 - db_handles - contains the SQLiteHandler, which is responsible for interacting with the database
 - slack_bot contains:
