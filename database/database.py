@@ -31,22 +31,26 @@ class SqliteHandler():
             column_mapping: Dictionary of column mappings
             returns: List of rows
         """
-        # Convert column names to a comma-separated string
-        columns_str = ', '.join(column_mapping.values())
+        try:
+            # Convert column names to a comma-separated string
+            columns_str = ', '.join(column_mapping.values())
 
-        # Get the date column from the column mapping
-        date_column = column_mapping["contract_expiration"]
+            # Get the date column from the column mapping
+            date_column = column_mapping["contract_expiration"]
 
-        # Query to fetch all rows from the table where the date is greater than or equal to today
-        query = f"SELECT {columns_str} FROM {table_name} WHERE DATE({date_column}) >= DATE('now')"
+            # Query to fetch all rows from the table where the date is greater than or equal to today
+            query = f"SELECT {columns_str} FROM {table_name} WHERE DATE({date_column}) >= DATE('now')"
 
-        # Execute the query
-        self.cursor.execute(query)
+            # Execute the query
+            self.cursor.execute(query)
 
-        # Fetch all rows
-        rows = self.cursor.fetchall()
+            # Fetch all rows
+            rows = self.cursor.fetchall()
 
-        return rows
+            return rows
+        except Exception as e:
+            print(f"Error fetching rows from the table: {e}")
+            return []
 
 # For testing purposes
 if __name__ == "__main__":
