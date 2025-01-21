@@ -49,6 +49,13 @@ class SqliteHandler():
         except Exception as e:
             print(f"Error fetching rows from the table: {e}")
             return []
+        
+    def close_connection(self):
+        """
+            Close the SQLite connection
+        """
+        self._connection.close()
+        self._instance = None
 
 # For testing purposes
 if __name__ == "__main__":

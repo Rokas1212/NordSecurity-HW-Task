@@ -12,11 +12,10 @@ class NotificationService:
             sender: SlackSender object
         """
         try:
-            response = sender.client.chat_postMessage(
+            sender.client.chat_postMessage(
                 channel=sender.channel,
                 text=message
             )
-            print(response)
         except SlackApiError as e:
             error_message = e.response.get("error", "Unknown error")
             print(f"Error sending message: {error_message}")
