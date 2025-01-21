@@ -57,19 +57,3 @@ class SqliteHandler():
         self._connection.close()
         self._instance = None
 
-# For testing purposes
-if __name__ == "__main__":
-    # Read table schemas file
-    with open('table_schemas.json', 'r') as file:
-        table_schemas = json.load(file)
-
-    sqlite_handler = SqliteHandler("contracts.sqlite")
-
-    # Iterate through each table and display its data
-    for table, columns in table_schemas.items():
-        print(f"\nOrganization: {table}")
-        rows = sqlite_handler.fetch_all_table_rows(table, columns)
-        for row in rows:
-            print(row)
-
-
