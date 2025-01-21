@@ -48,7 +48,7 @@ def main():
         with open(TABLE_SCHEMAS_FILE, 'r') as file:
             table_schemas = json.load(file)
 
-        # Initialize dictionaries for each table
+        # Initialize dictionaries for each table (organization)
         initialize_dictionaries(table_schemas, URGENT, UPCOMING, HIGH_COST)
 
         # Iterate through each table and format contract data into a message
