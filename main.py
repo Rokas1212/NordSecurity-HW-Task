@@ -7,15 +7,19 @@ from slack_bot.message_formatting import MessageFormatting as MF
 from slack_bot.notification_history_manager import NotificationHistoryManager as NHM
 from filters import filter_urgent, filter_upcoming, filter_high_cost
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Constants
 BOT_CHANNEL = "contracts-bot"
-SLACK_TOKEN = os.environ["SLACK_BOT_TOKEN"]
+SLACK_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 DATABASE = os.path.join(os.path.dirname(__file__), "contracts.sqlite")
-NOTIFICATION_HISTORY = os.path.join(os.path.dirname(__file__), "notification_history.json")
+NOTIFICATION_HISTORY_FILE = os.path.join(os.path.dirname(__file__), "notification_history.json")
 TABLE_SCHEMAS_FILE = os.path.join(os.path.dirname(__file__), "table_schemas.json")
 # Load the notification history data
-URGENT, UPCOMING, HIGH_COST = NHM.load_data(NOTIFICATION_HISTORY)
+URGENT, UPCOMING, HIGH_COST = NHM.load_data(NOTIFICATION_HISTORY_FILE)
 
 def initialize_dictionaries(table_schemas, urgent, upcoming, high_cost):
     """
@@ -28,24 +32,6 @@ def initialize_dictionaries(table_schemas, urgent, upcoming, high_cost):
             upcoming[table] = []
         if table not in high_cost:
             high_cost[table] = []
-
-def prepare_message(table, columns, urgent, upcoming, high_cost):
-    """
-        Prepare the message for the Slack notification
-        table: Table name, also representing the organization name
-        columns: Dictionary of column mappings
-        urgent: List of urgent contracts
-        upcoming: List of upcoming contracts
-        high_cost: List of high-cost contracts
-        returns: Prepared message
-    """
-
-    message = ""
-    message += MF.prepare_contract_message(URGENT, "URGENT", table, urgent, columns)
-    message += MF.prepare_contract_message(UPCOMING, "UPCOMING", table, upcoming, columns)
-    message += MF.prepare_contract_message(HIGH_COST, "HIGH-COST", table, high_cost, columns)
-    
-    return message
 
 def main():
     # Initialize message
@@ -72,7 +58,9 @@ def main():
         high_cost = filter_high_cost(rows, columns)
 
         # Prepare the message
-        message += prepare_message(table, columns, urgent, upcoming, high_cost)
+        message += MF.prepare_contract_message(URGENT, "URGENT", table, urgent, columns)
+        message += MF.prepare_contract_message(UPCOMING, "UPCOMING", table, upcoming, columns)
+        message += MF.prepare_contract_message(HIGH_COST, "HIGH-COST", table, high_cost, columns)
 
         # Store the filtered contracts
         URGENT[table] = urgent
@@ -83,7 +71,7 @@ def main():
     NS.send_message(message, sender)
     
     #Save the notification history data
-    NHM.save_data(URGENT, UPCOMING, HIGH_COST, NOTIFICATION_HISTORY)
+    NHM.save_data(URGENT, UPCOMING, HIGH_COST, NOTIFICATION_HISTORY_FILE)
 
     db.close_connection()
 
