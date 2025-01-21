@@ -11,8 +11,9 @@ from datetime import datetime
 # Constants
 BOT_CHANNEL = "contracts-bot"
 SLACK_TOKEN = os.environ["SLACK_BOT_TOKEN"]
-DATABASE = "contracts.sqlite"
-NOTIFICATION_HISTORY = "notification_history.json"
+DATABASE = os.path.join(os.path.dirname(__file__), "contracts.sqlite")
+NOTIFICATION_HISTORY = os.path.join(os.path.dirname(__file__), "notification_history.json")
+TABLE_SCHEMAS_FILE = os.path.join(os.path.dirname(__file__), "table_schemas.json")
 # Load the notification history data
 URGENT, UPCOMING, HIGH_COST = NHM.load_data(NOTIFICATION_HISTORY)
 
@@ -57,7 +58,7 @@ def main():
     db = SqliteHandler(DATABASE)
 
     # Read table schemas file
-    with open('table_schemas.json', 'r') as file:
+    with open(TABLE_SCHEMAS_FILE, 'r') as file:
         table_schemas = json.load(file)
 
     # Initialize dictionaries for each table
