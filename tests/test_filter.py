@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime, timedelta
-from filters import filter_urgent, filter_upcoming, filter_high_cost
+from helpers.filters import filter_urgent, filter_upcoming, filter_high_cost
 
 
 class TestFilters(unittest.TestCase):

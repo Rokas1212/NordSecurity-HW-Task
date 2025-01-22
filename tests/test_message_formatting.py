@@ -1,5 +1,5 @@
 import unittest
-from slack_bot.message_formatting import MessageFormatting as MF
+from helpers.message_formatting import MessageFormatting as MF
 
 class TestMessageFormatting(unittest.TestCase):
     def setUp(self):
