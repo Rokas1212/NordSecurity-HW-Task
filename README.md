@@ -1,5 +1,13 @@
 # Nord Security Junior Python Engineer HW Task
 
+## General Info
+- Slack bot that reads an SQLite database file with contracts inside it and after collating the contracts based on predefined criteria sends them to a slack channel
+- Contracts that are sent over to Slack must fit at least one of the three criteria: 
+  - be Urgent (expiring within 3 days);
+  - be Upcoming (expiring within 14 days);
+  - be High-Cost (expiring withing a month and also have an annual cost of 10000 or over)
+- If a contract fits more than one criteria it will only be classified as one of the types in this order Urgent, Upcoming, High-Cost.
+
 ## User Guide
 - Add the Slack APP to your Slack channel, name the channel contracts-bot
 - Describe table schemas in table_schemas.json located in the root directory
@@ -16,16 +24,17 @@
   - The cronjob above would run the script once every day at 8
 
 ## Project Guide
-- db_handles contains the SQLiteHandler, which is responsible for interacting with the database
-- slack_bot contains:
-  - message_formatting - static class used for formatting the slack messages
+- *db_handlers* directory contains the SQLiteHandler, which is responsible for interacting with the database
+- *slack_bot* directory contains:
   - notificaton_history_manager - static class used to track contracts that have been sent out through notifications (since the provided DB tables did not have primary keys I used a json file)
   - notification_service - static class that abstracts the sending of a message in slack and takes the client (sender) object as input
   - slack_sender - sender class that allows to create a sender object
-- tests directory contains unit tests
-- project root contains:
+- *helpers* directory contains:
+  - message_formatting - static class used for formatting the slack messages
+  - filters.py - responsible for filtering contracts by type
+- project *root* contains:
     - main.py - responsible for executing the script
-    - filters.py - responsible for filtering contracts by type
+- *tests* directory contains unit tests
 
 ## Running Unit Tests
 - Navigate to the root directory
