@@ -1,4 +1,4 @@
-# Nord Security Junior Python Engineer HW Task
+# Nord Security Junior SE (Python) HW Task
 
 ## General Info
 - Slack bot that reads an SQLite database file with contracts inside it and after collating the contracts based on predefined criteria sends them to a slack channel
