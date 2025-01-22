@@ -1,4 +1,4 @@
-# Nord Security Junior Python Engineer HW Task
+# Nord Security Junior SE (Python) HW Task
 
 ## General Info
 - Slack bot that reads an SQLite database file with contracts inside it and after collating the contracts based on predefined criteria sends them to a slack channel
@@ -9,7 +9,7 @@
 - If a contract fits more than one criteria it will only be classified as one of the types in this order Urgent, Upcoming, High-Cost.
 
 ## User Guide
-- Add the Slack APP to your Slack channel, name the channel contracts-bot
+- Create and add a Slack APP to your Slack channel, name the channel contracts-bot
 - Describe table schemas in table_schemas.json located in the root directory
 - Create a .env file in the root directory of the project and assign your API key to SLACK_BOT_TOKEN
 - Run main.py
